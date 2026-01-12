@@ -82,19 +82,16 @@ class Workstation {
 
         document.getElementById('hero-hp').addEventListener('input', (e) => {
             this.state.hp = parseInt(e.target.value);
-            document.getElementById('hp-val').textContent = this.state.hp;
             this.render();
         });
 
         document.getElementById('hero-max-hp').addEventListener('input', (e) => {
             this.state.maxHp = parseInt(e.target.value);
-            document.getElementById('max-hp-val').textContent = this.state.maxHp;
             this.render();
         });
 
         document.getElementById('hero-armor').addEventListener('input', (e) => {
             this.state.armor = parseInt(e.target.value);
-            document.getElementById('armor-val').textContent = this.state.armor;
             this.render();
         });
 
@@ -240,9 +237,6 @@ class Workstation {
         document.getElementById('hero-hp').value = this.state.hp;
         document.getElementById('hero-max-hp').value = this.state.maxHp;
         document.getElementById('hero-armor').value = this.state.armor;
-        document.getElementById('hp-val').textContent = this.state.hp;
-        document.getElementById('max-hp-val').textContent = this.state.maxHp;
-        document.getElementById('armor-val').textContent = this.state.armor;
         document.getElementById('hero-flavor').value = this.state.flavor;
         document.getElementById('hide-faction').checked = this.state.hideFaction;
         document.getElementById('title-font').value = this.state.titleFont;

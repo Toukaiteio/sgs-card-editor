@@ -281,9 +281,26 @@ export class CardGenerator {
             x = l.x - w / 2; y = l.y - h / 2;
         } else if (comp === 'hp') {
             const maxHp = data.maxHp || data.hp;
-            w = (maxHp + (data.armor || 0)) * (l.size * l.spacing) + 20;
-            h = l.size + 10;
-            x = l.x - 5; y = l.y - 5;
+            const totalIcons = maxHp + (data.armor || 0);
+
+            if (totalIcons > 13) {
+                // Compact format: estimate width based on text + icons
+                w = 300; // Generous estimate for compact format
+                h = l.size + 10;
+                x = l.x - 5; y = l.y - 5;
+            } else {
+                // Use same auto-spacing logic as drawHP
+                const maxWidth = 300;
+                const baseWidth = totalIcons * (l.size * l.spacing);
+                let actualSpacing = l.spacing;
+                if (baseWidth > maxWidth) {
+                    actualSpacing = maxWidth / (totalIcons * l.size);
+                }
+
+                w = totalIcons * (l.size * actualSpacing) + 20;
+                h = l.size + 10;
+                x = l.x - 5; y = l.y - 5;
+            }
         } else if (comp === 'skillBox') {
             const layout = this.calculateSkillLayout(data);
             h = Math.max(l.h, layout.requiredBoxHeight);
@@ -547,16 +564,83 @@ export class CardGenerator {
     drawHP(data) {
         const layout = data.layouts.hp;
         const maxHp = data.maxHp || data.hp;
-        this.ctx.save();
-        for (let i = 0; i < maxHp; i++) {
-            const key = `${this.CONFIG.assets.border[data.faction] || 'shen'}${i >= data.hp ? '_empty' : ''}`;
-            this.drawMagatama(layout.x + i * (layout.size * layout.spacing), layout.y, layout.size, key);
+        const totalIcons = maxHp + (data.armor || 0);
+
+        // Use compact format when total > 13
+        if (totalIcons > 13) {
+            this.ctx.save();
+            let currentX = layout.x;
+            const iconSize = layout.size;
+            const spacing = 8; // Fixed spacing between groups
+
+            // Draw HP icon + count
+            if (data.hp > 0) {
+                const key = `${this.CONFIG.assets.border[data.faction] || 'shen'}`;
+                this.drawMagatama(currentX, layout.y, iconSize, key);
+                this.ctx.font = 'bold 16px Arial';
+                this.ctx.fillStyle = '#fff';
+                this.ctx.strokeStyle = '#000';
+                this.ctx.lineWidth = 3;
+                this.ctx.textBaseline = 'middle';
+                const text = ` × ${data.hp}`;
+                this.ctx.strokeText(text, currentX + iconSize + 2, layout.y + iconSize / 2);
+                this.ctx.fillText(text, currentX + iconSize + 2, layout.y + iconSize / 2);
+                currentX += iconSize + this.ctx.measureText(text).width + spacing;
+            }
+
+            // Draw empty HP icon + count (if any)
+            if (maxHp > data.hp) {
+                const key = `${this.CONFIG.assets.border[data.faction] || 'shen'}_empty`;
+                this.drawMagatama(currentX, layout.y, iconSize, key);
+                this.ctx.font = 'bold 16px Arial';
+                this.ctx.fillStyle = '#999';
+                this.ctx.strokeStyle = '#000';
+                this.ctx.lineWidth = 3;
+                this.ctx.textBaseline = 'middle';
+                const text = ` × ${maxHp - data.hp}`;
+                this.ctx.strokeText(text, currentX + iconSize + 2, layout.y + iconSize / 2);
+                this.ctx.fillText(text, currentX + iconSize + 2, layout.y + iconSize / 2);
+                currentX += iconSize + this.ctx.measureText(text).width + spacing;
+            }
+
+            // Draw armor icon + count (if any)
+            if (data.armor > 0) {
+                const key = `${this.CONFIG.assets.border[data.faction] || 'shen'}_armor`;
+                this.drawMagatama(currentX, layout.y, iconSize, key);
+                this.ctx.font = 'bold 16px Arial';
+                this.ctx.fillStyle = '#4af';
+                this.ctx.strokeStyle = '#000';
+                this.ctx.lineWidth = 3;
+                this.ctx.textBaseline = 'middle';
+                const text = ` × ${data.armor}`;
+                this.ctx.strokeText(text, currentX + iconSize + 2, layout.y + iconSize / 2);
+                this.ctx.fillText(text, currentX + iconSize + 2, layout.y + iconSize / 2);
+            }
+
+            this.ctx.restore();
+        } else {
+            // Original rendering for <= 13 icons
+            // Auto-adjust spacing to fit within max width
+            const maxWidth = 300;
+            const baseWidth = totalIcons * (layout.size * layout.spacing);
+            let actualSpacing = layout.spacing;
+
+            if (baseWidth > maxWidth) {
+                // Reduce spacing to fit within maxWidth
+                actualSpacing = maxWidth / (totalIcons * layout.size);
+            }
+
+            this.ctx.save();
+            for (let i = 0; i < maxHp; i++) {
+                const key = `${this.CONFIG.assets.border[data.faction] || 'shen'}${i >= data.hp ? '_empty' : ''}`;
+                this.drawMagatama(layout.x + i * (layout.size * actualSpacing), layout.y, layout.size, key);
+            }
+            for (let i = 0; i < (data.armor || 0); i++) {
+                const key = `${this.CONFIG.assets.border[data.faction] || 'shen'}_armor`;
+                this.drawMagatama(layout.x + (maxHp + i) * (layout.size * actualSpacing), layout.y, layout.size, key);
+            }
+            this.ctx.restore();
         }
-        for (let i = 0; i < (data.armor || 0); i++) {
-            const key = `${this.CONFIG.assets.border[data.faction] || 'shen'}_armor`;
-            this.drawMagatama(layout.x + (maxHp + i) * (layout.size * layout.spacing), layout.y, layout.size, key);
-        }
-        this.ctx.restore();
     }
 
     drawMagatama(x, y, size, key) {

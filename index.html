@@ -101,26 +101,21 @@
                             <h3>生命与防御</h3>
                         </div>
                         <div class="accordion-content">
-                            <div class="control-group">
-                                <div class="range-header">
-                                    <label>当前体力</label>
-                                    <span id="hp-val">3</span>
+                            <div class="control-row">
+                                <div class="control-group">
+                                    <label for="hero-hp">当前体力</label>
+                                    <input type="number" id="hero-hp" min="0" value="3" class="form-control">
                                 </div>
-                                <input type="range" id="hero-hp" min="0" max="10" value="3" class="form-range">
+                                <div class="control-group">
+                                    <label for="hero-max-hp">体力上限</label>
+                                    <input type="number" id="hero-max-hp" min="1" value="3" class="form-control">
+                                </div>
                             </div>
-                            <div class="control-group">
-                                <div class="range-header">
-                                    <label>体力上限</label>
-                                    <span id="max-hp-val">3</span>
+                            <div class="control-row">
+                                <div class="control-group">
+                                    <label for="hero-armor">护甲值</label>
+                                    <input type="number" id="hero-armor" min="0" value="0" class="form-control">
                                 </div>
-                                <input type="range" id="hero-max-hp" min="1" max="10" value="3" class="form-range">
-                            </div>
-                            <div class="control-group">
-                                <div class="range-header">
-                                    <label>护甲值</label>
-                                    <span id="armor-val">0</span>
-                                </div>
-                                <input type="range" id="hero-armor" min="0" max="5" value="0" class="form-range">
                             </div>
                         </div>
                     </div>

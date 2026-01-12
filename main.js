@@ -5,24 +5,25 @@ class Workstation {
         this.generator = new CardGenerator();
         this.previewContainer = document.getElementById('card-preview');
         this.state = {
-            faction: '神',
-            title: '测试武将',
-            name: '卡牌助手',
+            faction: '魏',
+            title: '湖上冰精',
+            name: '琪露诺',
             hp: 3,
             maxHp: 3,
             armor: 0,
-            artImage: '',
+            artImage: './assets/example/example.jpg',
             skills: [
-                { name: '神威', type: '锁定技', desc: '你在本工作站中可以获得极致的编辑体验。' }
+                { name: '冻结', type: '锁定技', desc: '攻击范围内角色的【杀】对你无效。' },
+                { name: '天才', type: '锁定技', desc: '你的手牌上限始终为 9。' }
             ],
-            flavor: '由 Antigravity 设计',
+            flavor: '“我才是最强的！”',
             titleFont: 'XiaoZhuan',
             nameFont: 'XingKai',
             titleColor: '#fff100',
             nameColor: '#ffffff',
             hideFaction: false,
             enableCustomBorder: false,
-            borderColor: '#8c8c8c',
+            borderColor: '#81b2d1',
             customFaction: '',
             layouts: {},
             highlight: null,

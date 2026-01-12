@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGS Card Studio | 三国杀武将卡牌高级工作站</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="dark-theme">
+    <div id="app">
+        <header class="app-header">
+            <div class="header-actions">
+                <button id="btn-import-json" class="btn btn-outline btn-sm">导入项目</button>
+                <button id="btn-export-json" class="btn btn-outline btn-sm">保存项目</button>
+                <button id="btn-export" class="btn btn-primary">导出卡牌</button>
+                <button id="btn-reset" class="btn btn-outline">重置</button>
+                <input type="file" id="json-input" accept=".json" hidden>
+            </div>
+        </header>
+
+        <main class="workspace">
+            <!-- Left: Preview Section -->
+            <section class="preview-section">
+                <div class="preview-container">
+                    <div id="card-preview" class="interactive-canvas">
+                        <!-- Real-time canvas will be here -->
+                        <div class="loading-overlay">加载资源中...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right: Controls Section -->
+            <section class="controls-section">
+                <div class="accordion">
+                    <!-- Basic Info -->
+                    <div class="accordion-item active">
+                        <div class="accordion-header">
+                            <h3>基础信息</h3>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="control-group">
+                                <label for="hero-faction">势力</label>
+                                <select id="hero-faction" class="form-control">
+                                    <option value="神">神</option>
+                                    <option value="魏">魏</option>
+                                    <option value="蜀">蜀</option>
+                                    <option value="吴">吴</option>
+                                    <option value="群">群</option>
+                                    <option value="晋">晋</option>
+                                    <option value="自定义">自定义</option>
+                                </select>
+                            </div>
+                            <div class="control-group" id="custom-faction-group" style="display: none;">
+                                <label for="custom-faction">自定义势力名</label>
+                                <input type="text" id="custom-faction" class="form-control" placeholder="如：汉"
+                                    maxlength="1">
+                            </div>
+                            <div class="control-row">
+                                <div class="control-group">
+                                    <label for="hero-title">称号</label>
+                                    <input type="text" id="hero-title" class="form-control" placeholder="如：乱世枭雄"
+                                        maxlength="4">
+                                </div>
+                                <div class="control-group">
+                                    <label for="hero-name">名字</label>
+                                    <input type="text" id="hero-name" class="form-control" placeholder="如：曹操"
+                                        maxlength="4">
+                                </div>
+                            </div>
+                            <div class="control-row">
+                                <div class="control-group">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" id="custom-border-toggle">
+                                        <span class="checkbox-label">自定义边框颜色</span>
+                                    </label>
+                                </div>
+                                <div class="control-group">
+                                    <input type="color" id="hero-border-color" class="form-control color-picker"
+                                        value="#8c8c8c">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="hide-faction">
+                                    <span class="checkbox-label">隐藏势力图标</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>生命与防御</h3>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="control-group">
+                                <div class="range-header">
+                                    <label>当前体力</label>
+                                    <span id="hp-val">3</span>
+                                </div>
+                                <input type="range" id="hero-hp" min="0" max="10" value="3" class="form-range">
+                            </div>
+                            <div class="control-group">
+                                <div class="range-header">
+                                    <label>体力上限</label>
+                                    <span id="max-hp-val">3</span>
+                                </div>
+                                <input type="range" id="hero-max-hp" min="1" max="10" value="3" class="form-range">
+                            </div>
+                            <div class="control-group">
+                                <div class="range-header">
+                                    <label>护甲值</label>
+                                    <span id="armor-val">0</span>
+                                </div>
+                                <input type="range" id="hero-armor" min="0" max="5" value="0" class="form-range">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appearance -->
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>外观与字体</h3>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="control-row">
+                                <div class="control-group">
+                                    <label for="title-font">称号字体</label>
+                                    <select id="title-font" class="form-control">
+                                        <option value="XiaoZhuan">小篆</option>
+                                        <option value="HuangCao">黄草</option>
+                                        <option value="XingKai">行楷</option>
+                                        <option value="XinWei">新魏</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label for="title-color">称号颜色</label>
+                                    <input type="color" id="title-color" class="form-control color-picker"
+                                        value="#fff100">
+                                </div>
+                            </div>
+                            <div class="control-row">
+                                <div class="control-group">
+                                    <label for="name-font">名字字体</label>
+                                    <select id="name-font" class="form-control">
+                                        <option value="XingKai">行楷</option>
+                                        <option value="HuangCao">黄草</option>
+                                        <option value="XiaoZhuan">小篆</option>
+                                        <option value="XinWei">新魏</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label for="name-color">名字颜色</label>
+                                    <input type="color" id="name-color" class="form-control color-picker"
+                                        value="#ffffff">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="hero-art">图片链接 (或上传)</label>
+                                <input type="text" id="hero-art-url" class="form-control" placeholder="https://...">
+                                <div class="upload-area" id="drop-zone">
+                                    <span>点击或拖拽上传</span>
+                                    <input type="file" id="hero-art-file" accept="image/*" hidden>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>技能设定</h3>
+                        </div>
+                        <div id="skills-list" class="accordion-content">
+                            <!-- Skill items will be added here -->
+                            <div class="skill-editor-item box-glass">
+                                <input type="text" class="skill-name form-control" placeholder="技能名">
+                                <select class="skill-type form-control">
+                                    <option value="普通技">普通技</option>
+                                    <option value="锁定技">锁定技</option>
+                                    <option value="觉醒技">觉醒技</option>
+                                    <option value="限定技">限定技</option>
+                                    <option value="主公技">主公技</option>
+                                </select>
+                                <textarea class="skill-desc form-control"
+                                    placeholder="技能描述 (支持 [b]加粗[/b], [red]红色[/red])"></textarea>
+                                <button class="btn-remove-skill">×</button>
+                            </div>
+                            <button id="btn-add-skill" class="btn btn-secondary btn-sm">+ 添加技能</button>
+                        </div>
+                    </div>
+
+                    <!-- Extra -->
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>布局微调</h3>
+                        </div>
+                        <div class="accordion-content">
+                            <!-- Hero Info Layout -->
+                            <div class="layout-group">
+                                <div class="group-header">
+                                    <h4>个人信息 (称号/名字)</h4>
+                                    <button class="btn-reset-layout" data-target="heroInfo">重置</button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-group">
+                                        <label>水平位置 (X)</label>
+                                        <input type="number" class="form-control layout-input" data-path="heroInfo.x">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>垂直位置 (Y)</label>
+                                        <input type="number" class="form-control layout-input" data-path="heroInfo.y">
+                                    </div>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-group">
+                                        <label>称号间距</label>
+                                        <input type="number" class="form-control layout-input"
+                                            data-path="heroInfo.titleSpacing">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>名字间距</label>
+                                        <input type="number" class="form-control layout-input"
+                                            data-path="heroInfo.nameSpacing">
+                                    </div>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-group">
+                                        <label>称号大小</label>
+                                        <input type="number" class="form-control layout-input"
+                                            data-path="heroInfo.titleSize">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>名字大小</label>
+                                        <input type="number" class="form-control layout-input"
+                                            data-path="heroInfo.nameSize">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Faction Layout -->
+                            <div class="layout-group">
+                                <div class="group-header">
+                                    <h4>势力图标</h4>
+                                    <button class="btn-reset-layout" data-target="faction">重置</button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-group">
+                                        <label>位置 X</label>
+                                        <input type="number" class="form-control layout-input" data-path="faction.x">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>位置 Y</label>
+                                        <input type="number" class="form-control layout-input" data-path="faction.y">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>大小</label>
+                                        <input type="number" class="form-control layout-input" data-path="faction.size">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- HP Layout -->
+                            <div class="layout-group">
+                                <div class="group-header">
+                                    <h4>体力/护甲槽</h4>
+                                    <button class="btn-reset-layout" data-target="hp">重置</button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-group">
+                                        <label>起始 X</label>
+                                        <input type="number" class="form-control layout-input" data-path="hp.x">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>起始 Y</label>
+                                        <input type="number" class="form-control layout-input" data-path="hp.y">
+                                    </div>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-group">
+                                        <label>图标大小</label>
+                                        <input type="number" class="form-control layout-input" data-path="hp.size">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>间距系数</label>
+                                        <input type="number" step="0.05" class="form-control layout-input"
+                                            data-path="hp.spacing">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Skill Layouts -->
+                            <div class="layout-group">
+                                <div class="group-header">
+                                    <h4>技能背景 (阴影块)</h4>
+                                    <button class="btn-reset-layout" data-target="skillBox">重置</button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-group">
+                                        <label>位置 X</label>
+                                        <input type="number" class="form-control layout-input" data-path="skillBox.x">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>位置 Y</label>
+                                        <input type="number" class="form-control layout-input" data-path="skillBox.y">
+                                    </div>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-group">
+                                        <label>宽度</label>
+                                        <input type="number" class="form-control layout-input" data-path="skillBox.w">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>高度</label>
+                                        <input type="number" class="form-control layout-input" data-path="skillBox.h">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layout-group">
+                                <div class="group-header">
+                                    <h4>技能标签 (名字)</h4>
+                                    <button class="btn-reset-layout" data-target="skillTags">重置</button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-group">
+                                        <label>左侧 X</label>
+                                        <input type="number" class="form-control layout-input" data-path="skillTags.x">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>顶端 Y</label>
+                                        <input type="number" class="form-control layout-input" data-path="skillTags.y">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layout-group">
+                                <div class="group-header">
+                                    <h4>技能描述 (正文)</h4>
+                                    <button class="btn-reset-layout" data-target="skillText">重置</button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-group">
+                                        <label>位置 X</label>
+                                        <input type="number" class="form-control layout-input" data-path="skillText.x">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>位置 Y</label>
+                                        <input type="number" class="form-control layout-input" data-path="skillText.y">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>额外内容</h3>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="control-group">
+                                <label for="hero-flavor">插画引言 (Flavor Text)</label>
+                                <input type="text" id="hero-flavor" class="form-control" placeholder="一段凄美的文字...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>

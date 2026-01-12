@@ -199,44 +199,61 @@
                             <h3>布局微调</h3>
                         </div>
                         <div class="accordion-content">
-                            <!-- Hero Info Layout -->
+                            <!-- Title Layout -->
                             <div class="layout-group">
                                 <div class="group-header">
-                                    <h4>个人信息 (称号/名字)</h4>
-                                    <button class="btn-reset-layout" data-target="heroInfo">重置</button>
+                                    <h4>称号文字</h4>
+                                    <button class="btn-reset-layout" data-target="title">重置</button>
                                 </div>
                                 <div class="control-row">
                                     <div class="control-group">
-                                        <label>水平位置 (X)</label>
-                                        <input type="number" class="form-control layout-input" data-path="heroInfo.x">
+                                        <label>位置 X</label>
+                                        <input type="number" class="form-control layout-input" data-path="title.x">
                                     </div>
                                     <div class="control-group">
-                                        <label>垂直位置 (Y)</label>
-                                        <input type="number" class="form-control layout-input" data-path="heroInfo.y">
-                                    </div>
-                                </div>
-                                <div class="control-row">
-                                    <div class="control-group">
-                                        <label>称号间距</label>
-                                        <input type="number" class="form-control layout-input"
-                                            data-path="heroInfo.titleSpacing">
-                                    </div>
-                                    <div class="control-group">
-                                        <label>名字间距</label>
-                                        <input type="number" class="form-control layout-input"
-                                            data-path="heroInfo.nameSpacing">
+                                        <label>位置 Y</label>
+                                        <input type="number" class="form-control layout-input" data-path="title.y">
                                     </div>
                                 </div>
                                 <div class="control-row">
                                     <div class="control-group">
-                                        <label>称号大小</label>
-                                        <input type="number" class="form-control layout-input"
-                                            data-path="heroInfo.titleSize">
+                                        <label>字体大小</label>
+                                        <input type="number" class="form-control layout-input" data-path="title.size">
                                     </div>
                                     <div class="control-group">
-                                        <label>名字大小</label>
+                                        <label>字符间距</label>
                                         <input type="number" class="form-control layout-input"
-                                            data-path="heroInfo.nameSize">
+                                            data-path="title.spacing">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hero Name Layout -->
+                            <div class="layout-group">
+                                <div class="group-header">
+                                    <h4>武将名字</h4>
+                                    <button class="btn-reset-layout" data-target="heroName">重置</button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-group">
+                                        <label>位置 X</label>
+                                        <input type="number" class="form-control layout-input" data-path="heroName.x">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>位置 Y</label>
+                                        <input type="number" class="form-control layout-input" data-path="heroName.y">
+                                    </div>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-group">
+                                        <label>字体大小</label>
+                                        <input type="number" class="form-control layout-input"
+                                            data-path="heroName.size">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>字符间距</label>
+                                        <input type="number" class="form-control layout-input"
+                                            data-path="heroName.spacing">
                                     </div>
                                 </div>
                             </div>

@@ -29,7 +29,8 @@ export class CardGenerator {
         };
 
         this.LAYOUT_DEFAULTS = {
-            heroInfo: { x: 45, y: 120, titleSize: 24, nameSize: 42, titleSpacing: 26, nameSpacing: 46, rotation: 0 },
+            title: { x: 42, y: 100, size: 24, spacing: 26, rotation: 0 },
+            heroName: { x: 40, y: 215, size: 42, spacing: 46, rotation: 0 },
             faction: { x: 45, y: 60, size: 80, rotation: 0 },
             hp: { x: 80, y: 25, size: 38, spacing: 0.65, rotation: 0 },
             skillBox: { x: 62, y: 490, w: 340, h: 80, rotation: 0 },
@@ -194,7 +195,8 @@ export class CardGenerator {
         this.drawFrameImage(W, H, data);
 
         // Draw components with individual rotation
-        this.drawRotated('heroInfo', data, () => this.drawHeroInfo(data));
+        this.drawRotated('title', data, () => this.drawTitle(data));
+        this.drawRotated('heroName', data, () => this.drawHeroName(data));
         if (!data.hideFaction) {
             this.drawRotated('faction', data, () => this.drawFaction(data));
         }
@@ -270,11 +272,15 @@ export class CardGenerator {
         if (!l) return null;
 
         let x, y, w, h;
-        if (comp === 'heroInfo') {
+        if (comp === 'title') {
             const titleLen = data.title.length;
+            w = 80;
+            h = titleLen * l.spacing;
+            x = l.x - w / 2; y = l.y;
+        } else if (comp === 'heroName') {
             const nameLen = data.name.length;
             w = 80;
-            h = titleLen * l.titleSpacing + 30 + nameLen * l.nameSpacing;
+            h = nameLen * l.spacing;
             x = l.x - w / 2; y = l.y;
         } else if (comp === 'faction') {
             w = l.size; h = l.size;
@@ -375,27 +381,41 @@ export class CardGenerator {
         }
     }
 
-    drawHeroInfo(data) {
-        const layout = data.layouts.heroInfo;
-        const x = layout.x; const y = layout.y;
+    drawTitle(data) {
+        const layout = data.layouts.title;
         this.ctx.save();
-        this.ctx.font = `${layout.titleSize}px "${data.titleFont}"`;
+        this.ctx.font = `${layout.size}px "${data.titleFont}"`;
         this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'top'; // Anchor at top
-        this.ctx.shadowColor = 'black'; this.ctx.shadowBlur = 0;
-        this.ctx.lineWidth = 2; this.ctx.strokeStyle = 'black'; this.ctx.fillStyle = data.titleColor;
+        this.ctx.textBaseline = 'top';
+        this.ctx.shadowColor = 'black';
+        this.ctx.shadowBlur = 0;
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeStyle = 'black';
+        this.ctx.fillStyle = data.titleColor;
         for (let i = 0; i < data.title.length; i++) {
-            const charY = y + i * layout.titleSpacing;
-            this.ctx.strokeText(data.title[i], x, charY); this.ctx.fillText(data.title[i], x, charY);
+            const charY = layout.y + i * layout.spacing;
+            this.ctx.strokeText(data.title[i], layout.x, charY);
+            this.ctx.fillText(data.title[i], layout.x, charY);
         }
-        const nameY = y + data.title.length * layout.titleSpacing + 30;
-        this.ctx.font = `${layout.nameSize}px "${data.nameFont}"`;
-        this.ctx.strokeStyle = 'black'; this.ctx.lineWidth = 3; this.ctx.lineJoin = 'round';
-        this.ctx.shadowColor = 'black'; this.ctx.shadowBlur = 4;
+        this.ctx.restore();
+    }
+
+    drawHeroName(data) {
+        const layout = data.layouts.heroName;
+        this.ctx.save();
+        this.ctx.font = `${layout.size}px "${data.nameFont}"`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'top';
+        this.ctx.strokeStyle = 'black';
+        this.ctx.lineWidth = 3;
+        this.ctx.lineJoin = 'round';
+        this.ctx.shadowColor = 'black';
+        this.ctx.shadowBlur = 4;
         for (let i = 0; i < data.name.length; i++) {
-            const charY = nameY + i * layout.nameSpacing;
-            this.ctx.strokeText(data.name[i], x, charY);
-            this.ctx.fillStyle = data.nameColor; this.ctx.fillText(data.name[i], x, charY);
+            const charY = layout.y + i * layout.spacing;
+            this.ctx.strokeText(data.name[i], layout.x, charY);
+            this.ctx.fillStyle = data.nameColor;
+            this.ctx.fillText(data.name[i], layout.x, charY);
         }
         this.ctx.restore();
     }

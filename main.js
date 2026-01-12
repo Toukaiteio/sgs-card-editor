@@ -293,7 +293,7 @@ class Workstation {
         const detectComponent = (pos) => {
             const config = { ...this.state };
             if (config.faction === '自定义') config.faction = config.customFaction || '神';
-            const order = ['heroInfo', 'faction', 'hp', 'skillBox', 'skillTags', 'skillText'];
+            const order = ['title', 'heroName', 'faction', 'hp', 'skillBox', 'skillTags', 'skillText'];
             for (const comp of order.reverse()) {
                 const rect = this.generator.getComponentRect(comp, config);
                 if (!rect) continue;
